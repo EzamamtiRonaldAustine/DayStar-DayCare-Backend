@@ -1,30 +1,24 @@
-import nodemailer from 'nodemailer';
-import dotenv from 'dotenv';
-dotenv.config();
+// This is to help in acccessing email service from other files
+const nodemailer = require('nodemailer');
 
-// Create reusable transporter object using Gmail and environment credentials
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: process.env.EMAIL_USER, // Handles emailing for the daycare web application
-    pass: process.env.EMAIL_PASS  // Gmail App Password (not normal login password)
+    user: process.env.EMAIL_USERNAME,
+    pass: process.env.EMAIL_PASSWORD,
   },
 });
 
-// Function that handles sending the OTP code to reset password
-// Takes in two parameters: recipient email and the OTP code
-export const ResetEmail = async (email, otp) => {
-  const mail = {
-    from: process.env.EMAIL_USER,            // Sender
-    to: email,                               // Receiver - user email
-    subject: 'Password reset OTP code',      // Email subject
-    text: `Your OTP code is: ${otp}`,        // Plaintext email body
+const sendEmail = async ({ to, subject, text, html }) => {
+  const mailOptions = {
+    from: process.env.EMAIL_USERNAME,
+    to,
+    subject,
+    text,
+    html,
   };
 
-  try {
-    await transporter.sendMail(mail);
-    console.log('Email sent successfully to', email);
-  } catch (err) {
-    console.log(`Error in sending email: ${err}`);
-  }
+  return transporter.sendMail(mailOptions);
 };
+
+module.exports = { sendEmail };

@@ -1,12 +1,19 @@
-// Description: Routes for babysitter management, including registration and retrieval of all babysitters.
-import express from 'express';
-import { registerBabysitter, getAllBabysitters } from '../controllers/babysitterController.js';
-import { protect, managerOnly } from '../middleware/authMiddleware.js';
-
+const express = require('express');
 const router = express.Router();
+const babysitterController = require('../controller/babysitterController');
 
-// Routes restricted to manager only
-router.post('/register', protect, managerOnly, registerBabysitter);
-router.get('/', protect, managerOnly, getAllBabysitters);
+// Babysitter Routes
+router.post('/add-babysitter', babysitterController.addBabysitter);
+router.get('/babysitters', babysitterController.getAllBabysitters);
+router.get('/babysitter/:id', babysitterController.getBabysitterById);
+router.put('/babysitter/:id', babysitterController.updateBabysitter);
+router.delete('/babysitter/:id', babysitterController.deleteBabysitter);
 
-export default router;
+// ✅ Attendance Routes
+router.post('/attendance', babysitterController.addChildAttendance);
+// check-in and check-out routes
+router.put('/attendance/checkin/:id', babysitterController.checkInChild);
+router.put('/attendance/checkout/:id', babysitterController.checkOutChild); 
+router.get('/attendance/daily', babysitterController.getDailyAttendance); 
+
+module.exports = router;

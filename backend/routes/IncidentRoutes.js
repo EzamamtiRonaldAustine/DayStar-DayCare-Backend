@@ -1,13 +1,11 @@
-import express from 'express';
-import { reportIncident, getIncidents } from '../controllers/incidentController.js';
-import { protect, babysitterOnly, managerOnly } from '../middleware/authMiddleware.js';
-
+const express = require('express');
 const router = express.Router();
+const {
+  createIncident,
+  getAllIncidents,
+} = require('../controller/incidentController');
 
-// Babysitter reports an incident
-router.post('/report', protect, babysitterOnly, reportIncident);
+router.post('/report', createIncident);
+router.get('/incidents', getAllIncidents);
 
-// Manager views all incidents
-router.get('/', protect, managerOnly, getIncidents);
-
-export default router;
+module.exports = router;
